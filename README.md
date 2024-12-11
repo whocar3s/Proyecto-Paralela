@@ -50,6 +50,26 @@ Para ejecutar el juego, sigue estos pasos:
 
 - **Balas:** Cada bala disparada se gestiona en su propio hilo, permitiendo que se mueva sin afectar el rendimiento del juego en general.
 
+## **Ejecución** ##
+- **Menú principal**
+
+    <img src="src/main.png" width="200" height="300">
+
+- **Instrucciones**
+
+    <img src="src/instructions.png" width="200" height="300">
+
+- **Juego**
+
+    <img src="src/gameplay.png" width="200" height="300">
+
+- **Game Over**
+
+    <img src="src/gameover.png" width="200" height="300">
+
+
+
+
 ## **Grupo:** ##
 - Camilo Madero
 - Paula Paez
