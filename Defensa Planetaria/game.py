@@ -30,6 +30,8 @@ font = pygame.font.Font("Defensa Planetaria/src/dogica.ttf", 20)
 FPS = 60
 clock = pygame.time.Clock()
 score = 0  
+level = 1
+meteors_reached = 0
 
 class Cannon:
     def __init__(self, x, y):
@@ -99,14 +101,37 @@ def check_collision(bullet, meteor):
     distance = math.sqrt((bullet.x - meteor.x) ** 2 + (bullet.y - meteor.y) ** 2)
     return distance < 20  
 
-def show_score():
+def show_score_and_level():
     pygame.draw.rect(screen, (0, 0, 0), (0, 0, WIDTH, HEIGHT - 550))
     tittle_text = font.render("DEFENSA PLANETARIA", True, (254, 236, 25))
     screen.blit(tittle_text, (25, 15))
     pygame.draw.rect(screen, (0, 0, 0), (0, 560, WIDTH, HEIGHT))
     score_text = font.render(f"SCORE: {score}", True, WHITE)
-    screen.blit(score_text, (110, 570))
+    level_text = font.render(f"LEVEL:{level}", True, WHITE)
+    meteors_text = font.render(f"MISSED: {meteors_reached}/5", True, (255, 0, 0))
+    screen.blit(score_text, (120, 570))
+    screen.blit(level_text, (10, 55))
+    screen.blit(meteors_text, (180, 55))
+    
+def increase_difficulty():
+    global level
+    level += 1
 
+def game_over(bullets, meteors):
+    for bullet in bullets:
+        bullet.stop()
+    for meteor in meteors:
+        meteor.stop()
+    
+    font_big = pygame.font.Font("Defensa Planetaria/src/dogica.ttf", 30)
+    over_text = font_big.render("GAME OVER", True, (255, 0, 0))
+    pygame.draw.rect(screen, (0, 0, 0), (10, 190, WIDTH - 20, HEIGHT - 400), 0, 15)
+    screen.blit(over_text, (WIDTH // 2 - over_text.get_width() // 2, HEIGHT // 2 - 30))
+    pygame.display.flip()
+    time.sleep(2)
+    pygame.quit()
+    exit()
+    
 def show_menu():
     menu_font = pygame.font.Font("Defensa Planetaria/src/dogica.ttf", 13)
     title_text = font.render("DEFENSA PLANETARIA", True, (254, 236, 25))
@@ -153,13 +178,14 @@ def draw_borders():
     pygame.draw.rect(screen, (0, 0, 0), (0, 0, WIDTH, HEIGHT), 5)
 
 def main():
-    global score
+    global score, level, meteors_reached
     running = True
     game_started = False
 
     cannon = Cannon(WIDTH // 2, HEIGHT - 50)
     bullets = []
-    meteors = [Meteor(random.randint(25, WIDTH - 25), random.randint(-500, -50), random.randint(2, 5)) for _ in range(10)]
+    meteor_speed = 2
+    meteors = [Meteor(random.randint(25, WIDTH - 25), random.randint(-500, -50), meteor_speed) for _ in range(10)]
     for meteor in meteors:
         meteor.start()
 
@@ -205,9 +231,10 @@ def main():
             else:
                 meteor.stop()
                 meteors.remove(meteor)
-                new_meteor = Meteor(random.randint(25, WIDTH - 25), random.randint(-500, -50), random.randint(2, 5))
-                meteors.append(new_meteor)
-                new_meteor.start()
+                meteors_reached += 1
+
+                if meteors_reached >= 5:
+                    game_over(bullets, meteors)
 
             for bullet in bullets[:]:
                 if check_collision(bullet, meteor):
@@ -215,13 +242,19 @@ def main():
                     bullets.remove(bullet)
                     meteor.stop()
                     meteors.remove(meteor)
-                    new_meteor = Meteor(random.randint(25, WIDTH - 25), random.randint(-500, -50), random.randint(2, 5))
+                    score += 10
+
+                    if score % 200 == 0:
+                        increase_difficulty()
+                        meteor_speed += 1
+                        meteors_reached = 0
+
+                    new_meteor = Meteor(random.randint(25, WIDTH - 25), random.randint(-500, -50), meteor_speed)
                     meteors.append(new_meteor)
                     new_meteor.start()
-                    score += 10
                     break
 
-        show_score()
+        show_score_and_level()
         pygame.display.flip()
         clock.tick(FPS)
 
