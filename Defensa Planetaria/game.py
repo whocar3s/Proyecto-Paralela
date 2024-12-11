@@ -235,6 +235,10 @@ def main():
 
                 if meteors_reached >= 5:
                     game_over(bullets, meteors)
+                    
+                new_meteor = Meteor(random.randint(25, WIDTH - 25), random.randint(-500, -50), meteor_speed)
+                meteors.append(new_meteor)
+                new_meteor.start()
 
             for bullet in bullets[:]:
                 if check_collision(bullet, meteor):
