@@ -25,7 +25,7 @@ Un juego desarrollado en Python con Pygame que utiliza conceptos de **computaci�
 2. **Instala las dependencias necesarias**:
     ```bash
     pip install pygame
-## **Ejecución del Juego**##
+## **Ejecución del Juego** ##
 Para ejecutar el juego, sigue estos pasos:
 
 1. Abre la terminal o consola de comandos y navega hasta la carpeta del proyecto:
